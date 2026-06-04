@@ -1,0 +1,5 @@
+# P920 override: dashboard only on the Tailscale interface, distinctive port 5601.
+services:
+  wazuh.dashboard:
+    ports: !override
+      - "100.84.112.24:5601:5601"
