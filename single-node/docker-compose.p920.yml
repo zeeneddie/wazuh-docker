@@ -1,5 +1,18 @@
-# P920 override: dashboard only on the Tailscale interface, distinctive port 5601.
+# P920 override: bind Wazuu host ports on the Tailscale interface only.
+# - indexer: NO host port (dashboard reaches it internally via wazuh.indexer:9200).
+#   The shared host already binds 0.0.0.0:9200 (wildcard), which blocks any 9200 bind.
+# - manager: Tailscale-only (host already uses 127.0.0.1:1514, a different IP -> OK).
+# - dashboard: Tailscale-only :5601.
+# !override REPLACES the base port lists (compose appends otherwise).
 services:
+  wazuh.manager:
+    ports: !override
+      - "100.84.112.24:1514:1514"
+      - "100.84.112.24:1515:1515"
+      - "100.84.112.24:514:514/udp"
+      - "100.84.112.24:55000:55000"
+  wazuh.indexer:
+    ports: !override []
   wazuh.dashboard:
     ports: !override
       - "100.84.112.24:5601:5601"
